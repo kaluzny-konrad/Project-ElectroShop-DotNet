@@ -1,0 +1,13 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@foreach (var product in Model.Products)
+{
+    <p>@product.ProductName</p>
+    <p>@product.Price</p>
+    <p>@product.Manufacturer</p>
+    <p>@product.ProductShortDescription</p>
+    <img src="@product.ProductImagePath" />
+}
