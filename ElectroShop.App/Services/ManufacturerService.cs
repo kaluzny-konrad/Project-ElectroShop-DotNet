@@ -1,35 +1,38 @@
-﻿using ElectroShop.App.Entities;
+﻿using ElectroShop.Shared.Domain;
+using System.Text.Json;
 
 namespace ElectroShop.App.Services
 {
     public interface IManufacturerService
     {
-        IEnumerable<Manufacturer> GetManufacturers();
-        Manufacturer? GetManufacturer(int manufacturerId);
+        Task<Manufacturer> GetManufacturer(int manufacturerId);
     }
 
     public class ManufacturerService : IManufacturerService
     {
-        public Manufacturer? GetManufacturer(int manufacturerId)
+        private readonly ILogger<ManufacturerService> _logger;
+        private readonly HttpClient _httpClient;
+
+        public ManufacturerService(ILogger<ManufacturerService> logger, HttpClient httpClient)
         {
-            return GetManufacturers().FirstOrDefault(m => m.ManufacturerId == manufacturerId);
+            _logger = logger;
+            _httpClient = httpClient;
         }
 
-        public IEnumerable<Manufacturer> GetManufacturers()
+        public async Task<Manufacturer> GetManufacturer(int manufacturerId)
         {
-            return new List<Manufacturer>()
+            var manufacturer = await JsonSerializer.DeserializeAsync<Manufacturer>(
+                await _httpClient.GetStreamAsync($"api/manufacturer/{manufacturerId}"), 
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+            );
+
+            if (manufacturer == null)
             {
-                new Manufacturer
-                {
-                    ManufacturerId = 1,
-                    ManufacturerName = "Motorola"
-                },
-                new Manufacturer
-                {
-                    ManufacturerId = 2,
-                    ManufacturerName = "Apple"
-                },
-            };
+                _logger.LogError("Manufacturer is null: {ManufacturerId}", manufacturerId);
+                return new Manufacturer();
+            }
+            
+            return manufacturer;
         }
     }
 }

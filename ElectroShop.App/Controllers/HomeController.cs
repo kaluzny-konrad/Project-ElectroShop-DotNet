@@ -1,5 +1,4 @@
-﻿using ElectroShop.App.Entities;
-using ElectroShop.App.ModelEntities;
+﻿using ElectroShop.App.Business;
 using ElectroShop.App.Models;
 using ElectroShop.App.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -29,41 +28,32 @@ namespace ElectroShop.App.Controllers
             _productDescriptionService = productDescriptionService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var products = _productService.GetProducts();
+            var products = await _productService.GetProducts();
 
-            var productsAtHome = products.Select(p =>
+            var categoryDataProducts = new List<CategoryDataProduct>();
+
+            foreach (var product in products)
             {
-                var manufacturer = _manufacturerService.GetManufacturer(p.ManufacturerId);
-                if (manufacturer == null)
-                {
-                    manufacturer = new Manufacturer();
-                    _logger.LogError("Manufacturer is null at product of id: {ProductId}", p.ProductId);
-                }
-                    
+                var manufacturer = await _manufacturerService.GetManufacturer(product.ManufacturerId);
+                var shortDescription = await _productDescriptionService.GetShortDescription(product.ProductId);
+                var productImagePath = $"images/product/{product.ProductId}.webp";
 
-                var shortDescription = _productDescriptionService.GetShortDescription(p.ProductId);
-                if (shortDescription == null)
+                var categoryDataProduct = new CategoryDataProduct
                 {
-                    shortDescription = string.Empty;
-                    _logger.LogError("ShortDescription is null at product of id: {ProductId}", p.ProductId);
-                }
-
-                var productImagePath = $"images/product/{p.ProductId}.webp";
-
-                return new ProductAtHome
-                {
-                    ProductId = p.ProductId,
-                    ProductName = p.ProductName,
-                    Price = p.Price,
+                    ProductId = product.ProductId,
+                    ProductName = product.ProductName,
+                    Price = product.Price,
                     Manufacturer = manufacturer,
                     ProductShortDescription = shortDescription,
                     ProductImagePath = productImagePath,
                 };
-            });
 
-            var model = new HomeViewModel { Products = productsAtHome };
+                categoryDataProducts.Add(categoryDataProduct);
+            }
+
+            var model = new HomeViewModel { Products = categoryDataProducts };
             return View(model);
         }
 

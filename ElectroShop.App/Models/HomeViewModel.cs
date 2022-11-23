@@ -1,9 +1,9 @@
-﻿using ElectroShop.App.ModelEntities;
+﻿using ElectroShop.App.Business;
 
 namespace ElectroShop.App.Models
 {
     public class HomeViewModel
     {
-        public IEnumerable<ProductAtHome> Products { get; set; } = new List<ProductAtHome>();
+        public IEnumerable<CategoryDataProduct> Products { get; set; } = new List<CategoryDataProduct>();
     }
 }

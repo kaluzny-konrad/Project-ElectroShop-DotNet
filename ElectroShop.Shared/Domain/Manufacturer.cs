@@ -1,4 +1,4 @@
-﻿namespace ElectroShop.App.Entities
+﻿namespace ElectroShop.Shared.Domain
 {
     public class Manufacturer
     {

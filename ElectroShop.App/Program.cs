@@ -3,10 +3,24 @@ using ElectroShop.App.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddHttpClient<IProductService, ProductService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7208/");
+});
+
+builder.Services.AddHttpClient<IManufacturerService, ManufacturerService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7208/");
+});
+
+builder.Services.AddHttpClient<IProductDescriptionService, ProductDescriptionService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7208/");
+
+});
+
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<IProductService, ProductService>();
-builder.Services.AddTransient<IManufacturerService, ManufacturerService>();
-builder.Services.AddTransient<IProductDescriptionService, ProductDescriptionService>();
 
 var app = builder.Build();
 
@@ -22,8 +36,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
