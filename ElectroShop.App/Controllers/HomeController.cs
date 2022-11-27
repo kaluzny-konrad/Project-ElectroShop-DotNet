@@ -36,7 +36,7 @@ namespace ElectroShop.App.Controllers
 
             foreach (var product in products)
             {
-                var productImagePath = $"images/product/{product.ProductId}.webp";
+                var productImagePath = $"images/product/{product.ProductId}-thumb.webp";
                 var productPageUrl = $"/product/{product.ProductId}";
 
                 var categoryDataProduct = new CategoryDataProduct

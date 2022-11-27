@@ -3,17 +3,17 @@
     ViewData["Title"] = "Home Page";
 }
 
-<h1>Products</h1>
-<div class="container">
+<div class="container col-12 col-lg-6">
+    <h2 class="ml-3">Products</h2>
     @foreach (var product in Model.Products)
     {
-        <div class="row mb-3" href="@product.ProductPageUrl">
-            <div class="col-4 col-sm-2">
-                <img class="product-image img-fluid mx-auto d-block" src="@product.ProductImagePath" />
-            </div>
-            <div class="col-8 col-sm-10">
-                <p class="fw-bold">@product.ProductName</p>
-                <p>@product.Price</p>
+        <div class="d-flex position-relative my-2 p-3 rounded bg-white border">
+            <img src="@product.ProductImagePath" class="flex-shrink-0 me-3" alt="@product.ProductName">
+            <div>
+                <h5 class="mt-0">@product.ProductName</h5>
+                <p>@product.Price</p>   
+                <button type="button" class="btn btn-primary">Buy product</button>
+                <a href="@product.ProductPageUrl" class="stretched-link"></a>
             </div>
         </div>
     }
