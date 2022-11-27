@@ -36,18 +36,16 @@ namespace ElectroShop.App.Controllers
 
             foreach (var product in products)
             {
-                var manufacturer = await _manufacturerService.GetManufacturer(product.ManufacturerId);
-                var shortDescription = await _productDescriptionService.GetShortDescription(product.ProductId);
                 var productImagePath = $"images/product/{product.ProductId}.webp";
+                var productPageUrl = $"/product/{product.ProductId}";
 
                 var categoryDataProduct = new CategoryDataProduct
                 {
                     ProductId = product.ProductId,
                     ProductName = product.ProductName,
                     Price = product.Price,
-                    Manufacturer = manufacturer,
-                    ProductShortDescription = shortDescription,
                     ProductImagePath = productImagePath,
+                    ProductPageUrl = productPageUrl,
                 };
 
                 categoryDataProducts.Add(categoryDataProduct);
