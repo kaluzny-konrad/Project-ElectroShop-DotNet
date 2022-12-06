@@ -1,4 +1,5 @@
-﻿@model HomeViewModel
+﻿@using ElectroShop.App.Controllers;
+@model HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -11,8 +12,7 @@
             <img src="@product.ProductImagePath" class="flex-shrink-0 me-3" alt="@product.ProductName">
             <div>
                 <h5 class="mt-0">@product.ProductName</h5>
-                <p>@product.Price</p>   
-                <button type="button" class="btn btn-primary">Buy product</button>
+                <p>@product.Price</p>
                 <a href="@product.ProductPageUrl" class="stretched-link"></a>
             </div>
         </div>

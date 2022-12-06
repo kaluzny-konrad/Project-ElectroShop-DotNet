@@ -11,24 +11,30 @@ namespace ElectroShop.App.Controllers
         private readonly ILogger<HomeController> _logger;
 
         private readonly IProductService _productService;
-        private readonly IManufacturerService _manufacturerService;
-        private readonly IProductDescriptionService _productDescriptionService;
 
         public HomeController
         (
             ILogger<HomeController> logger, 
-            IProductService productService, 
-            IManufacturerService manufacturerService, 
-            IProductDescriptionService productDescriptionService
+            IProductService productService
         )
         {
             _logger = logger;
             _productService = productService;
-            _manufacturerService = manufacturerService;
-            _productDescriptionService = productDescriptionService;
         }
 
         public async Task<IActionResult> Index()
+        {
+            var categoryDataProducts = await GetCategoryDataProducts();
+
+            var model = new HomeViewModel
+            {
+                Products = categoryDataProducts,
+            };
+
+            return View(model);
+        }
+
+        private async Task<List<CategoryDataProduct>> GetCategoryDataProducts()
         {
             var products = await _productService.GetProducts();
 
@@ -51,8 +57,7 @@ namespace ElectroShop.App.Controllers
                 categoryDataProducts.Add(categoryDataProduct);
             }
 
-            var model = new HomeViewModel { Products = categoryDataProducts };
-            return View(model);
+            return categoryDataProducts;
         }
 
         public IActionResult Privacy()
@@ -65,5 +70,11 @@ namespace ElectroShop.App.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+    }
+
+    public enum CategoryViewType
+    {
+        List = 0,
+        Box = 1,
     }
 }

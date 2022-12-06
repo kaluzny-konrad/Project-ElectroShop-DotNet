@@ -1,4 +1,5 @@
 ﻿using ElectroShop.App.Business;
+using ElectroShop.App.Controllers;
 
 namespace ElectroShop.App.Models
 {
