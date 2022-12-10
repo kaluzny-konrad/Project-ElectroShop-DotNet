@@ -2,7 +2,7 @@
 
 namespace ElectroShop.App.Business
 {
-    public class CategoryDataProduct
+    public class BaseProductData
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;

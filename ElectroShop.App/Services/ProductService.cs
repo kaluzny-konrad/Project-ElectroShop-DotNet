@@ -5,7 +5,9 @@ namespace ElectroShop.App.Services
 {
     public interface IProductService
     {
+        Task<IEnumerable<Product>> GetProducts(int top);
         Task<IEnumerable<Product>> GetProducts();
+        Task<Product> GetProduct(int productId);
     }
 
     public class ProductService : IProductService
@@ -13,6 +15,12 @@ namespace ElectroShop.App.Services
         private readonly HttpClient _httpClient;
 
         public ProductService(HttpClient httpClient) => _httpClient = httpClient;
+
+        public async Task<IEnumerable<Product>> GetProducts(int top)
+        {
+            var products = await GetProducts();
+            return products.Take(top);
+        }
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
@@ -23,6 +31,17 @@ namespace ElectroShop.App.Services
             if (products == null) return new List<Product>();
 
             return products;
+        }
+
+        public async Task<Product> GetProduct(int productId)
+        {
+            var product = await JsonSerializer.DeserializeAsync<Product>(
+                await _httpClient.GetStreamAsync($"api/product/{productId}"),
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+            );
+            if (product == null) return new Product();
+
+            return product;
         }
     }
 }

@@ -24,28 +24,29 @@ namespace ElectroShop.App.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var categoryDataProducts = await GetCategoryDataProducts();
+            var products = await GetProductsBaseData();
 
             var model = new HomeViewModel
             {
-                Products = categoryDataProducts,
+                Products = products,
             };
 
             return View(model);
         }
 
-        private async Task<List<CategoryDataProduct>> GetCategoryDataProducts()
+        private async Task<List<BaseProductData>> GetProductsBaseData()
         {
-            var products = await _productService.GetProducts();
+            var top = 3;
+            var products = await _productService.GetProducts(top);
 
-            var categoryDataProducts = new List<CategoryDataProduct>();
+            var categoryDataProducts = new List<BaseProductData>();
 
             foreach (var product in products)
             {
-                var productImagePath = $"images/product/{product.ProductId}-thumb.webp";
-                var productPageUrl = $"/product/{product.ProductId}";
+                var productImagePath = Url.Content($"~/images/product/{product.ProductId}-thumb.webp");
+                var productPageUrl = $"/product/details/{product.ProductId}";
 
-                var categoryDataProduct = new CategoryDataProduct
+                var categoryDataProduct = new BaseProductData
                 {
                     ProductId = product.ProductId,
                     ProductName = product.ProductName,
@@ -70,11 +71,5 @@ namespace ElectroShop.App.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-    }
-
-    public enum CategoryViewType
-    {
-        List = 0,
-        Box = 1,
     }
 }
