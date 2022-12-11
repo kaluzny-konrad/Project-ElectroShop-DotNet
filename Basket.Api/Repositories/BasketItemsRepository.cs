@@ -5,13 +5,11 @@ namespace Basket.Api.Repositories
 {
     public interface IBasketItemsRepository
     {
-        IEnumerable<BasketItem> GetBasketItems();
         IEnumerable<BasketItem> GetBasketItems(int userId);
         BasketItem? GetBasketItem(int basketItemId);
-        BasketItem? GetBasketItem(int userId, int productId);
+        bool IsBasketItemExists(BasketItem basketItem);
         BasketItem AddBasketItem(BasketItem basketItem);
-        BasketItem? UpdateBasketItem(int basketItemId, int changeAmount);
-        BasketItem? AddAmountToBasketItem(int basketItemId, int changeAmount);
+        BasketItem? UpdateBasketItem(BasketItem basketItem);
         void DeleteBasketItem(int basketItemId);
     }
 
@@ -24,29 +22,19 @@ namespace Basket.Api.Repositories
             _dbContext = dbContext;
         }
 
-        public IEnumerable<BasketItem> GetBasketItems()
-        {
-            return _dbContext.BasketItems;
-        }
+        public IEnumerable<BasketItem> GetBasketItems(int userId) 
+            => _dbContext.BasketItems
+                .Where(i => i.UserId == userId);
 
-        public IEnumerable<BasketItem> GetBasketItems(int userId)
-        {
-            return GetBasketItems()
-                .Where(basketItem => basketItem.UserId == userId);
-        }
+        public BasketItem? GetBasketItem(int basketItemId) 
+            => _dbContext.BasketItems
+                .FirstOrDefault(i => i.BasketItemId == basketItemId);
 
-        public BasketItem? GetBasketItem(int basketItemId)
-        {
-            return GetBasketItems()
-                .FirstOrDefault(basketItem => basketItem.BasketItemId == basketItemId);
-        }
-
-        public BasketItem? GetBasketItem(int userId, int productId)
-        {
-            return GetBasketItems()
-                .Where(basketItem => basketItem.UserId == userId)
-                .FirstOrDefault(basketItem => basketItem.ProductId == productId);
-        }
+        public bool IsBasketItemExists(BasketItem basketItem)
+            => _dbContext.BasketItems
+                .Where(i => i.UserId == basketItem.UserId 
+                    && i.ProductId == basketItem.ProductId)
+                .Any();
 
         public BasketItem AddBasketItem(BasketItem basketItem)
         {
@@ -55,42 +43,23 @@ namespace Basket.Api.Repositories
             return addedEntity.Entity;
         }
 
-        public BasketItem? UpdateBasketItem(int basketItemId, int changeAmount)
+        public BasketItem? UpdateBasketItem(BasketItem basketItem)
         {
-            var foundBasketItem = GetBasketItem(basketItemId);
+            var foundBasketItem = GetBasketItem(basketItem.BasketItemId);
+            if (foundBasketItem == null) return null;
 
-            if (foundBasketItem != null)
+            foundBasketItem.Amount = basketItem.Amount;
+
+            if (foundBasketItem.Amount <= 0)
             {
-                foundBasketItem.Amount = changeAmount;
-
-                if (foundBasketItem.Amount > 0)
-                {
-                    _dbContext.SaveChanges();
-                    return foundBasketItem;
-                }
-                else DeleteBasketItem(foundBasketItem.BasketItemId);
+                DeleteBasketItem(foundBasketItem.BasketItemId);
+                return null;
             }
-
-            return null;
-        }
-
-        public BasketItem? AddAmountToBasketItem(int basketItemId, int changeAmount)
-        {
-            var foundBasketItem = GetBasketItem(basketItemId);
-
-            if (foundBasketItem != null)
+            else
             {
-                foundBasketItem.Amount += changeAmount;
-
-                if (foundBasketItem.Amount > 0)
-                {
-                    _dbContext.SaveChanges();
-                    return foundBasketItem;
-                }
-                else DeleteBasketItem(foundBasketItem.BasketItemId);
+                _dbContext.SaveChanges();
+                return foundBasketItem;
             }
-
-            return null;
         }
 
         public void DeleteBasketItem(int basketItemId)

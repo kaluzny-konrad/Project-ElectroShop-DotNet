@@ -20,11 +20,11 @@ namespace Basket.Api.Controllers
         [HttpGet("{userId}")]
         public IActionResult GetBasketItems(int userId)
         {
-            if (userId == 0) return BadRequest();
+            if (userId <= 0) ModelState
+                    .AddModelError("UserId", "UserId should be more than zero.");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var basketItems = _basketItemsRepository.GetBasketItems(userId);
-            if (basketItems.IsNullOrEmpty()) return NotFound();
-
             return Ok(basketItems);
         }
 
@@ -33,57 +33,41 @@ namespace Basket.Api.Controllers
         [HttpPost]
         public IActionResult CreateBasketItem([FromBody] BasketItem basketItem)
         {
-            if (basketItem == null) return BadRequest();
+            if (basketItem.Amount <= 0) ModelState
+                    .AddModelError("Amount", "Amount should be more than zero.");
+            if (basketItem.UserId <= 0) ModelState
+                    .AddModelError("UserId", "UserId should be more than zero.");
+            if (basketItem.ProductId <= 0) ModelState
+                    .AddModelError("ProductId", "ProductId should be more than zero.");
 
-            if (basketItem.Amount == 0) ModelState
-                    .AddModelError("Amount", "Amount shouldn't be zero.");
-            if (basketItem.UserId == 0) ModelState
-                    .AddModelError("UserId", "UserId shouldn't be zero.");
-            if (basketItem.ProductId == 0) ModelState
-                    .AddModelError("ProductId", "ProductId shouldn't be zero.");
+            var isBasketItemExists = _basketItemsRepository
+                .IsBasketItemExists(basketItem);
 
-            var foundBasketItem = _basketItemsRepository
-                .GetBasketItem(basketItem.UserId, basketItem.ProductId);
-
-            if (foundBasketItem != null) ModelState
-                .AddModelError("UserId ProductId", "Product already exists in the user's cart.");
-
+            if (isBasketItemExists == true) ModelState
+                .AddModelError("Uniqueness", "Product already exists in the user's cart.");
+            
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var updatedBasketItem = _basketItemsRepository.AddBasketItem(basketItem);
             return Ok(updatedBasketItem);
         }
 
-
-        // POST api/<controller>/5
-        [HttpPost("{basketItemId}")]
-        public IActionResult AddAmountToBasketItem(int basketItemId, [FromBody] int amount)
-        {
-            if (amount == 0) return BadRequest();
-
-            var foundBasketItem = _basketItemsRepository
-                .GetBasketItem(basketItemId);
-
-            if (foundBasketItem == null) return NotFound();
-
-            var updatedBasketItem = _basketItemsRepository
-                .AddAmountToBasketItem(basketItemId, amount);
-            return Ok(updatedBasketItem);
-        }
-
-        // PUT api/<controller>/5
+        // PUT api/<controller>
         [HttpPut("{basketItemId}")]
-        public IActionResult UpdateAmountOfBasketItem(int basketItemId, [FromBody] int amount)
+        public IActionResult UpdateBasketItem([FromBody] BasketItem basketItem)
         {
-            if (amount == 0) return BadRequest();
+            if (basketItem.BasketItemId <= 0) ModelState
+                .AddModelError("BasketItemId", "BasketItemId should be more than zero.");
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var foundBasketItem = _basketItemsRepository
-                .GetBasketItem(basketItemId);
-
-            if (foundBasketItem == null) return NotFound();
+                .GetBasketItem(basketItem.BasketItemId);
+            if (foundBasketItem == null) 
+                return NotFound();
 
             var updatedBasketItem = _basketItemsRepository
-                .UpdateBasketItem(basketItemId, amount);
+                .UpdateBasketItem(basketItem);
             return Ok(updatedBasketItem);
         }
 
@@ -91,7 +75,10 @@ namespace Basket.Api.Controllers
         [HttpDelete("{basketItemId}")]
         public IActionResult DeleteBasketItem(int basketItemId)
         {
-            if (basketItemId == 0) return BadRequest();
+            if (basketItemId <= 0) ModelState
+                .AddModelError("BasketItemId", "BasketItemId should be more than zero.");
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var basketItemToDelete = _basketItemsRepository
                 .GetBasketItem(basketItemId);
