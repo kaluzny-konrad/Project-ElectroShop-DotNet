@@ -9,7 +9,7 @@ builder.Services.AddDbContext<ApiDbContext>(options => {
         builder.Configuration["ConnectionStrings:DefaultConnection"]);
 });
 
-builder.Services.AddScoped<IUserBasketRepository, UserBasketRepository>();
+builder.Services.AddScoped<IBasketItemsRepository, BasketItemsRepository>();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
