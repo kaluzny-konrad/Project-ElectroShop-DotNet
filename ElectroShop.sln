@@ -5,13 +5,11 @@ VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectroShop.App", "ElectroShop.App\ElectroShop.App.csproj", "{7B4E08FD-EB97-4AF4-8C8C-856C94207C42}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectroShop.Tests", "ElectroShop.Tests\ElectroShop.Tests.csproj", "{33D9D7BE-39A6-4998-97AB-66B8EC454D29}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectroShop.Api", "ElectroShop.Api\ElectroShop.Api.csproj", "{89DA3CF8-FB99-46CC-AF12-20AF89958800}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectroShop.Shared", "ElectroShop.Shared\ElectroShop.Shared.csproj", "{F9261467-3996-4EE5-BDAA-136512F6C57D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Api", "Basket.Api\Basket.Api.csproj", "{773208FB-E664-4399-80DB-634C20346DCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basket.Api", "Basket.Api\Basket.Api.csproj", "{773208FB-E664-4399-80DB-634C20346DCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		{7B4E08FD-EB97-4AF4-8C8C-856C94207C42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B4E08FD-EB97-4AF4-8C8C-856C94207C42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B4E08FD-EB97-4AF4-8C8C-856C94207C42}.Release|Any CPU.Build.0 = Release|Any CPU
-		{33D9D7BE-39A6-4998-97AB-66B8EC454D29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33D9D7BE-39A6-4998-97AB-66B8EC454D29}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33D9D7BE-39A6-4998-97AB-66B8EC454D29}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33D9D7BE-39A6-4998-97AB-66B8EC454D29}.Release|Any CPU.Build.0 = Release|Any CPU
 		{89DA3CF8-FB99-46CC-AF12-20AF89958800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89DA3CF8-FB99-46CC-AF12-20AF89958800}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89DA3CF8-FB99-46CC-AF12-20AF89958800}.Release|Any CPU.ActiveCfg = Release|Any CPU
