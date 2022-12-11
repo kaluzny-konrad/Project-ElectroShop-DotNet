@@ -16,15 +16,6 @@ namespace Basket.Api.Controllers
             _basketItemsRepository = basketItemsRepository;
         }
 
-        // GET api/<controller>
-        public IActionResult GetBasketItems()
-        {
-            var basketItems = _basketItemsRepository.GetBasketItems();
-            if (basketItems.IsNullOrEmpty()) return NotFound();
-
-            return Ok(basketItems);
-        }
-
         // GET api/<controller>/5
         [HttpGet("{userId}")]
         public IActionResult GetBasketItems(int userId)
