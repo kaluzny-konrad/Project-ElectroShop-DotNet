@@ -1,7 +1,6 @@
 ﻿using Basket.Api.Repositories;
 using ElectroShop.Shared.Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Basket.Api.Controllers
 {
@@ -66,8 +65,13 @@ namespace Basket.Api.Controllers
             if (foundBasketItem == null) 
                 return NotFound();
 
-            var updatedBasketItem = _basketItemsRepository
-                .UpdateBasketItem(basketItem);
+            if(basketItem.Amount <= 0)
+            {
+                _basketItemsRepository.DeleteBasketItem(basketItem.BasketItemId);
+                return Ok(basketItem);
+            }
+
+            var updatedBasketItem = _basketItemsRepository.UpdateBasketItem(basketItem);
             return Ok(updatedBasketItem);
         }
 

@@ -280,6 +280,30 @@ namespace Basket.Api.Tests
         }
 
         [Test]
+        public void UpdateBasketItem_ExistsBasketItem_AmountMoreThanZero_Returns_OkResult()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void UpdateBasketItem_ExistsBasketItem_AmountMoreThanZero_Returns_UpdatedItem()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void UpdateBasketItem_ExistsBasketItem_AmountLessOrEqualZero_Returns_OkResult()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void UpdateBasketItem_ExistsBasketItem_AmountLessOrEqualZero_Returns_DeletedItem()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
         [TestCase(0)]
         [TestCase(-1)]
         public void DeleteBasketItem_UserIdLessOrEqualToZero_Returns_BadRequestResult(int userId)

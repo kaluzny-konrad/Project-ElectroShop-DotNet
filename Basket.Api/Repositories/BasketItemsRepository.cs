@@ -50,16 +50,8 @@ namespace Basket.Api.Repositories
 
             foundBasketItem.Amount = basketItem.Amount;
 
-            if (foundBasketItem.Amount <= 0)
-            {
-                DeleteBasketItem(foundBasketItem.BasketItemId);
-                return null;
-            }
-            else
-            {
-                _dbContext.SaveChanges();
-                return foundBasketItem;
-            }
+            _dbContext.SaveChanges();
+            return foundBasketItem;
         }
 
         public void DeleteBasketItem(int basketItemId)
