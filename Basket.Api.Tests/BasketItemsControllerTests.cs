@@ -100,10 +100,10 @@ namespace Basket.Api.Tests
         public void CreateBasketItem_EmptyBasketItem_Returns_BadRequestResult()
         {
             // Arrange
-            var basketItem = new BasketItem();
+            var emptyBasketItem = new BasketItem();
 
             // Act
-            var result = _controller.CreateBasketItem(basketItem);
+            var result = _controller.CreateBasketItem(emptyBasketItem);
 
             // Assert
             Assert.That(result, Is.TypeOf(typeof(BadRequestObjectResult)));
@@ -113,10 +113,10 @@ namespace Basket.Api.Tests
         public void CreateBasketItem_EmptyBasketItem_Returns_ModelStateErrors()
         {
             // Arrange
-            var basketItem = new BasketItem();
+            var emptyBasketItem = new BasketItem();
 
             // Act
-            var result = _controller.CreateBasketItem(basketItem) 
+            var result = _controller.CreateBasketItem(emptyBasketItem) 
                 as BadRequestObjectResult;
 
             // Assert
@@ -134,13 +134,13 @@ namespace Basket.Api.Tests
         public void CreateBasketItem_DuplicatedBasketItem_Returns_BadRequestResult()
         {
             // Arrange
-            var basketItem = new BasketItem() { UserId = 1, ProductId = 1, Amount = 1 };
+            var duplicatedBasketItem = new BasketItem() { UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.IsBasketItemExists(basketItem))
+                .Setup(r => r.IsBasketItemExists(duplicatedBasketItem))
                 .Returns(true);
 
             // Act
-            var result = _controller.CreateBasketItem(basketItem);
+            var result = _controller.CreateBasketItem(duplicatedBasketItem);
 
             // Assert
             Assert.That(result, Is.TypeOf(typeof(BadRequestObjectResult)));
@@ -150,13 +150,13 @@ namespace Basket.Api.Tests
         public void CreateBasketItem_DuplicatedBasketItem_Returns_ModelStateError()
         {
             // Arrange
-            var basketItem = new BasketItem() { UserId = 1, ProductId = 1, Amount = 1 };
+            var duplicatedBasketItem = new BasketItem() { UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.IsBasketItemExists(basketItem))
+                .Setup(r => r.IsBasketItemExists(duplicatedBasketItem))
                 .Returns(true);
 
             // Act
-            var result = _controller.CreateBasketItem(basketItem) 
+            var result = _controller.CreateBasketItem(duplicatedBasketItem) 
                 as BadRequestObjectResult;
 
             // Assert
@@ -172,19 +172,19 @@ namespace Basket.Api.Tests
         public void CreateBasketItem_NewBasketItem_Returns_OkResult()
         {
             // Arrange
-            var basketItem = new BasketItem() { UserId = 1, ProductId = 1, Amount = 1 };
+            var newBasketItem = new BasketItem() { UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.IsBasketItemExists(basketItem))
+                .Setup(r => r.IsBasketItemExists(newBasketItem))
                 .Returns(false);
 
             var createdBasketItem = new BasketItem() 
                 { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.AddBasketItem(basketItem))
+                .Setup(r => r.AddBasketItem(newBasketItem))
                 .Returns(createdBasketItem);
 
             // Act
-            var result = _controller.CreateBasketItem(basketItem);
+            var result = _controller.CreateBasketItem(newBasketItem);
 
             // Assert
             Assert.That(result, Is.TypeOf(typeof(OkObjectResult)));
@@ -194,19 +194,19 @@ namespace Basket.Api.Tests
         public void CreateBasketItem_NewBasketItem_Returns_CreatedBasketItem()
         {
             // Arrange
-            var basketItem = new BasketItem() { UserId = 1, ProductId = 1, Amount = 1 };
+            var newBasketItem = new BasketItem() { UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.IsBasketItemExists(basketItem))
+                .Setup(r => r.IsBasketItemExists(newBasketItem))
                 .Returns(false);
 
             var createdBasketItem = new BasketItem()
             { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.AddBasketItem(basketItem))
+                .Setup(r => r.AddBasketItem(newBasketItem))
                 .Returns(createdBasketItem);
 
             // Act
-            var result = _controller.CreateBasketItem(basketItem) as OkObjectResult;
+            var result = _controller.CreateBasketItem(newBasketItem) as OkObjectResult;
 
             // Assert
             Assert.That(result?.Value, Is.EqualTo(createdBasketItem));
@@ -216,10 +216,10 @@ namespace Basket.Api.Tests
         public void UpdateBasketItem_EmptyBasketItem_Returns_BadRequestResult()
         {
             // Arrange
-            var basketItem = new BasketItem();
+            var EmptyBasketItem = new BasketItem();
 
             // Act
-            var result = _controller.UpdateBasketItem(basketItem);
+            var result = _controller.UpdateBasketItem(EmptyBasketItem);
 
             // Assert
             Assert.That(result, Is.TypeOf(typeof(BadRequestObjectResult)));
@@ -229,10 +229,10 @@ namespace Basket.Api.Tests
         public void UpdateBasketItem_EmptyBasketItem_Returns_ModelStateError()
         {
             // Arrange
-            var basketItem = new BasketItem();
+            var EmptyBasketItem = new BasketItem();
 
             // Act
-            var result = _controller.UpdateBasketItem(basketItem) 
+            var result = _controller.UpdateBasketItem(EmptyBasketItem) 
                 as BadRequestObjectResult;
 
             // Assert
@@ -248,14 +248,14 @@ namespace Basket.Api.Tests
         public void UpdateBasketItem_NewBasketItem_Returns_NotFoundResult()
         {
             // Arrange
-            var basketItem = new BasketItem() 
+            var newBasketItem = new BasketItem() 
                 { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.GetBasketItem(basketItem.BasketItemId))
+                .Setup(r => r.GetBasketItem(newBasketItem.BasketItemId))
                 .Returns(value: null);
 
             // Act
-            var result = _controller.UpdateBasketItem(basketItem);
+            var result = _controller.UpdateBasketItem(newBasketItem);
 
             // Assert
             Assert.That(result, Is.TypeOf(typeof(NotFoundResult)));
@@ -265,14 +265,14 @@ namespace Basket.Api.Tests
         public void UpdateBasketItem_NewBasketItem_NotReturns_ModelStateError()
         {
             // Arrange
-            var basketItem = new BasketItem()
-            { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
+            var newBasketItem = new BasketItem()
+                { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.GetBasketItem(basketItem.BasketItemId))
+                .Setup(r => r.GetBasketItem(newBasketItem.BasketItemId))
                 .Returns(value: null);
 
             // Act
-            var result = _controller.UpdateBasketItem(basketItem) as NotFoundObjectResult;
+            var result = _controller.UpdateBasketItem(newBasketItem) as NotFoundObjectResult;
 
             // Assert
             var modelStateErrors = result?.Value as SerializableError;
@@ -282,25 +282,75 @@ namespace Basket.Api.Tests
         [Test]
         public void UpdateBasketItem_ExistsBasketItem_AmountMoreThanZero_Returns_OkResult()
         {
-            Assert.Fail();
+            // Arrange
+            var existsBasketItem = new BasketItem()
+                { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
+            _repositoryMock
+                .Setup(r => r.GetBasketItem(existsBasketItem.BasketItemId))
+                .Returns(existsBasketItem);
+            _repositoryMock
+                .Setup(r => r.UpdateBasketItem(existsBasketItem))
+                .Returns(existsBasketItem);
+
+            // Act
+            var result = _controller.UpdateBasketItem(existsBasketItem) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.TypeOf(typeof(OkObjectResult)));
         }
 
         [Test]
         public void UpdateBasketItem_ExistsBasketItem_AmountMoreThanZero_Returns_UpdatedItem()
         {
-            Assert.Fail();
+            // Arrange
+            var existsBasketItem = new BasketItem()
+                { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
+            _repositoryMock
+                .Setup(r => r.GetBasketItem(existsBasketItem.BasketItemId))
+                .Returns(existsBasketItem);
+            _repositoryMock
+                .Setup(r => r.UpdateBasketItem(existsBasketItem))
+                .Returns(existsBasketItem);
+
+            // Act
+            var result = _controller.UpdateBasketItem(existsBasketItem) as OkObjectResult;
+
+            // Assert
+            Assert.That(result?.Value, Is.EqualTo(existsBasketItem));
         }
 
         [Test]
         public void UpdateBasketItem_ExistsBasketItem_AmountLessOrEqualZero_Returns_OkResult()
         {
-            Assert.Fail();
+            // Arrange
+            var existsBasketItem = new BasketItem()
+            { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 0 };
+            _repositoryMock
+                .Setup(r => r.GetBasketItem(existsBasketItem.BasketItemId))
+                .Returns(existsBasketItem);
+
+            // Act
+            var result = _controller.UpdateBasketItem(existsBasketItem) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.TypeOf(typeof(OkObjectResult)));
         }
 
         [Test]
         public void UpdateBasketItem_ExistsBasketItem_AmountLessOrEqualZero_Returns_DeletedItem()
         {
-            Assert.Fail();
+            // Arrange
+            var existsBasketItem = new BasketItem()
+            { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 0 };
+            _repositoryMock
+                .Setup(r => r.GetBasketItem(existsBasketItem.BasketItemId))
+                .Returns(existsBasketItem);
+
+            // Act
+            var result = _controller.UpdateBasketItem(existsBasketItem) as OkObjectResult;
+
+            // Assert
+            Assert.That(result?.Value, Is.EqualTo(existsBasketItem));
         }
 
         [Test]
@@ -336,14 +386,14 @@ namespace Basket.Api.Tests
         public void DeleteBasketItem_ExistsBasketItem_Returns_OkResult()
         {
             // Arrange
-            var deletedBasketItem = new BasketItem()
+            var existsBasketItem = new BasketItem()
                 { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.GetBasketItem(deletedBasketItem.BasketItemId))
-                .Returns(deletedBasketItem);
+                .Setup(r => r.GetBasketItem(existsBasketItem.BasketItemId))
+                .Returns(existsBasketItem);
 
             // Act
-            var result = _controller.DeleteBasketItem(deletedBasketItem.BasketItemId);
+            var result = _controller.DeleteBasketItem(existsBasketItem.BasketItemId);
 
             // Assert
             Assert.That(result, Is.TypeOf(typeof(OkObjectResult)));
@@ -353,32 +403,32 @@ namespace Basket.Api.Tests
         public void DeleteBasketItem_ExistsBasketItem_Returns_DeletedObject()
         {
             // Arrange
-            var deletedBasketItem = new BasketItem() 
+            var existsBasketItem = new BasketItem() 
                 { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.GetBasketItem(deletedBasketItem.BasketItemId))
-                .Returns(deletedBasketItem);
+                .Setup(r => r.GetBasketItem(existsBasketItem.BasketItemId))
+                .Returns(existsBasketItem);
 
             // Act
-            var result = _controller.DeleteBasketItem(deletedBasketItem.BasketItemId) 
+            var result = _controller.DeleteBasketItem(existsBasketItem.BasketItemId) 
                 as OkObjectResult;
 
             // Assert
-            Assert.That(result?.Value, Is.EqualTo(deletedBasketItem));
+            Assert.That(result?.Value, Is.EqualTo(existsBasketItem));
         }
 
         [Test]
         public void DeleteBasketItem_NewBasketItem_Returns_NotFoundResult()
         {
             // Arrange
-            var deletedBasketItem = new BasketItem() 
+            var newBasketItem = new BasketItem() 
                 { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.GetBasketItem(deletedBasketItem.BasketItemId))
+                .Setup(r => r.GetBasketItem(newBasketItem.BasketItemId))
                 .Returns(value: null);
 
             // Act
-            var result = _controller.DeleteBasketItem(deletedBasketItem.BasketItemId);
+            var result = _controller.DeleteBasketItem(newBasketItem.BasketItemId);
 
             // Assert
             Assert.That(result, Is.TypeOf(typeof(NotFoundResult)));
@@ -388,14 +438,14 @@ namespace Basket.Api.Tests
         public void DeleteBasketItem_NewBasketItem_NotReturns_ModelStateError()
         {
             // Arrange
-            var deletedBasketItem = new BasketItem()
+            var newBasketItem = new BasketItem()
                 { BasketItemId = 1, UserId = 1, ProductId = 1, Amount = 1 };
             _repositoryMock
-                .Setup(r => r.IsBasketItemExists(deletedBasketItem))
+                .Setup(r => r.IsBasketItemExists(newBasketItem))
                 .Returns(false);
 
             // Act
-            var result = _controller.DeleteBasketItem(deletedBasketItem.BasketItemId) 
+            var result = _controller.DeleteBasketItem(newBasketItem.BasketItemId) 
                 as NotFoundObjectResult;
 
             // Assert
