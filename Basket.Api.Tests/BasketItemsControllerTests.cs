@@ -239,8 +239,9 @@ namespace Basket.Api.Tests
             var modelStateErrors = result?.Value as SerializableError;
             Assert.Multiple(() =>
             {
-                Assert.That(modelStateErrors?.Count, Is.EqualTo(1));
+                Assert.That(modelStateErrors?.Count, Is.EqualTo(2));
                 Assert.That(modelStateErrors?["BasketItemId"], Is.Not.Null);
+                Assert.That(modelStateErrors?["Amount"], Is.Not.Null);
             });
         }
 
@@ -320,7 +321,7 @@ namespace Basket.Api.Tests
         }
 
         [Test]
-        public void UpdateBasketItem_ExistsBasketItem_AmountLessOrEqualZero_Returns_OkResult()
+        public void UpdateBasketItem_ExistsBasketItem_AmountLessOrEqualZero_Returns_BadRequest()
         {
             // Arrange
             var existsBasketItem = new BasketItem()
@@ -330,14 +331,14 @@ namespace Basket.Api.Tests
                 .Returns(existsBasketItem);
 
             // Act
-            var result = _controller.UpdateBasketItem(existsBasketItem) as OkObjectResult;
+            var result = _controller.UpdateBasketItem(existsBasketItem);
 
             // Assert
-            Assert.That(result, Is.TypeOf(typeof(OkObjectResult)));
+            Assert.That(result, Is.TypeOf(typeof(BadRequestObjectResult)));
         }
 
         [Test]
-        public void UpdateBasketItem_ExistsBasketItem_AmountLessOrEqualZero_Returns_DeletedItem()
+        public void UpdateBasketItem_ExistsBasketItem_AmountLessOrEqualZero_Returns_ModelError()
         {
             // Arrange
             var existsBasketItem = new BasketItem()
@@ -347,10 +348,15 @@ namespace Basket.Api.Tests
                 .Returns(existsBasketItem);
 
             // Act
-            var result = _controller.UpdateBasketItem(existsBasketItem) as OkObjectResult;
+            var result = _controller.UpdateBasketItem(existsBasketItem) as BadRequestObjectResult;
 
             // Assert
-            Assert.That(result?.Value, Is.EqualTo(existsBasketItem));
+            var modelStateErrors = result?.Value as SerializableError;
+            Assert.Multiple(() =>
+            {
+                Assert.That(modelStateErrors?.Count, Is.EqualTo(1));
+                Assert.That(modelStateErrors?["Amount"], Is.Not.Null);
+            });
         }
 
         [Test]

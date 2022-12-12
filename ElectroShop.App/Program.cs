@@ -17,7 +17,11 @@ builder.Services.AddHttpClient<IManufacturerService, ManufacturerService>(client
 builder.Services.AddHttpClient<IProductDescriptionService, ProductDescriptionService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7208/");
+});
 
+builder.Services.AddHttpClient<IBasketService, BasketService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7294/");
 });
 
 builder.Services.AddControllersWithViews();

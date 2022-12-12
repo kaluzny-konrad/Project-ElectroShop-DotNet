@@ -58,18 +58,15 @@ namespace Basket.Api.Controllers
             if (basketItem.BasketItemId <= 0) ModelState
                 .AddModelError("BasketItemId", "BasketItemId should be more than zero.");
 
+            if (basketItem.Amount <= 0) ModelState
+                .AddModelError("Amount", "Amount should be more than zero.");
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var foundBasketItem = _basketItemsRepository
                 .GetBasketItem(basketItem.BasketItemId);
             if (foundBasketItem == null) 
                 return NotFound();
-
-            if(basketItem.Amount <= 0)
-            {
-                _basketItemsRepository.DeleteBasketItem(basketItem.BasketItemId);
-                return Ok(basketItem);
-            }
 
             var updatedBasketItem = _basketItemsRepository.UpdateBasketItem(basketItem);
             return Ok(updatedBasketItem);

@@ -1,6 +1,21 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model BasketViewModel
 @{
+    ViewData["Title"] = "Basket";
 }
-Basket is working!
+
+<div class="container col-12 col-lg-6">
+    <h2 class="ml-3">Products in basket </h2>
+    @foreach (var product in Model.BasketItems)
+    {
+            <div class="d-flex position-relative my-2 p-3 rounded bg-white border">
+                <img src="@product.ProductImagePath" class="flex-shrink-0 me-3" alt="@product.ProductName">
+                <div>
+                    <a href="@product.ProductPageUrl"><h5 class="mt-0">@product.ProductName</h5></a>
+                    <p>base price: @product.Price</p>
+                    <p>amount: @product.Amount</p>
+                    <p>full price: @product.FullPrice</p>
+                    <a asp-controller="basket" asp-action="delete" asp-route-basketItemId="@product.BasketItemId">Delete from Basket</a>
+                </div>
+            </div>
+    }
+</div>
