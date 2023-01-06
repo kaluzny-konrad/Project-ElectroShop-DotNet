@@ -11,7 +11,7 @@ namespace ElectroShop.Shared.Domain
         [Required]
         public string ProductName { get; set; } = string.Empty;
 
-        [Range(1, 100)]
+        [Range(double.Epsilon, double.MaxValue)]
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         [DisplayFormat(DataFormatString = "{0:c}")]
