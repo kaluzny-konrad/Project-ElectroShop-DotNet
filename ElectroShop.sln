@@ -11,11 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectroShop.Shared", "Elect
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basket.Api", "Basket.Api\Basket.Api.csproj", "{773208FB-E664-4399-80DB-634C20346DCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElectroShop.Api.Tests", "ElectroShop.Api.Tests\ElectroShop.Api.Tests.csproj", "{457F6EC2-94C1-43ED-92EF-127F5A0F2AE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectroShop.Api.Tests", "ElectroShop.Api.Tests\ElectroShop.Api.Tests.csproj", "{457F6EC2-94C1-43ED-92EF-127F5A0F2AE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basket.Api.Tests", "Basket.Api.Tests\Basket.Api.Tests.csproj", "{979B62D4-8D9F-4313-9AEB-F479A1D2152F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basket.Api.Tests", "Basket.Api.Tests\Basket.Api.Tests.csproj", "{979B62D4-8D9F-4313-9AEB-F479A1D2152F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElectroShop.App.Tests", "ElectroShop.App.Tests\ElectroShop.App.Tests.csproj", "{B855E136-DA82-4A8E-95AA-9674A61BBB87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectroShop.App.Tests", "ElectroShop.App.Tests\ElectroShop.App.Tests.csproj", "{B855E136-DA82-4A8E-95AA-9674A61BBB87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wishlist.Api", "Wishlist.Api\Wishlist.Api.csproj", "{B6BDF5E5-DEA6-43AD-B074-7F31C06A7C4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{B855E136-DA82-4A8E-95AA-9674A61BBB87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B855E136-DA82-4A8E-95AA-9674A61BBB87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B855E136-DA82-4A8E-95AA-9674A61BBB87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6BDF5E5-DEA6-43AD-B074-7F31C06A7C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6BDF5E5-DEA6-43AD-B074-7F31C06A7C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6BDF5E5-DEA6-43AD-B074-7F31C06A7C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6BDF5E5-DEA6-43AD-B074-7F31C06A7C4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
