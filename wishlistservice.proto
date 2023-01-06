@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+option csharp_namespace = "ElectroShop.gRPC";
+
+import "google/protobuf/timestamp.proto";
+
+service WishlistService {
+	rpc AddWishlist (WishlistPacket) returns (StatusMessage);
+	rpc AddWishlistStream (stream WishlistElementGrpc) returns (stream ErrorMessage);
+	rpc GetWishlistByUserId (UserInfo) returns (UserWishlist);
+	rpc DeleteWishlistElements (WishlistElementsToDelete) returns (StatusMessage);
+	rpc DeleteWishlist (WishlistsToDelete) returns (StatusMessage);
+}
+
+message WishlistsToDelete {
+	repeated UserInfo Users = 1;
+}
+
+message WishlistElementsToDelete {
+	repeated WishlistElementToDelete WishlistElements = 1;
+}
+
+message WishlistElementToDelete {
+	int32 UserId = 1;
+	int32 ProductId = 2;
+}
+
+message ErrorMessage {
+	string Message = 1;
+}
+
+message UserInfo {
+	int32 UserId = 1;
+}
+
+message UserWishlist {
+	repeated WishlistElementGrpc WishlistElements = 1;
+}
+
+message WishlistElementGrpc {
+	int32 UserId = 1;
+	int32 ProductId = 2;
+	google.protobuf.Timestamp AddedDate = 4;
+	reserved 3;
+}
+
+message WishlistPacket {
+  repeated WishlistElementGrpc WishlistElements = 1;
+  WishlistStatus Successful = 2;
+}
+
+message StatusMessage {
+  WishlistStatus Status = 1;
+  string StatusDetails = 2;
+}
+
+enum WishlistStatus {
+  Unknown = 0;
+  Success = 1;
+  Failure = 2;
+}
