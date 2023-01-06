@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Wishlist.Api.Repositories
 {
-    public class WishlistContext : DbContext
+    public class ApiDbContext : DbContext
     {
-        public WishlistContext(DbContextOptions<WishlistContext> options)
+        public ApiDbContext(DbContextOptions<ApiDbContext> options)
             : base(options) { }
 
         public DbSet<WishlistElement> Wishlists { get; set; }
@@ -19,7 +19,8 @@ namespace Wishlist.Api.Repositories
                 {
                     Id = 1,
                     UserId = 1,
-                    ProductId = 139108829
+                    ProductId = 139108829,
+                    AddedDate = DateTime.UtcNow,
                 });
         }
     }

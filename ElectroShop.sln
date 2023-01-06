@@ -17,7 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basket.Api.Tests", "Basket.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElectroShop.App.Tests", "ElectroShop.App.Tests\ElectroShop.App.Tests.csproj", "{B855E136-DA82-4A8E-95AA-9674A61BBB87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wishlist.Api", "Wishlist.Api\Wishlist.Api.csproj", "{B6BDF5E5-DEA6-43AD-B074-7F31C06A7C4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wishlist.Api", "Wishlist.Api\Wishlist.Api.csproj", "{B6BDF5E5-DEA6-43AD-B074-7F31C06A7C4D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{50BBCBEF-603A-4C7F-91C5-FB173C282A62}"
+	ProjectSection(SolutionItems) = preProject
+		wishlistservice.proto = wishlistservice.proto
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -7,18 +7,19 @@ namespace Wishlist.Api.Repositories
     {
         Task<IEnumerable<WishlistElement>> GetWishlist(int userId);
 
-        void AddEntity<T>(T model) where T : notnull;
-        void DeleteEntity<T>(T model) where T : notnull;
-        Task<bool> SaveAllAsync();
+        Task<bool> AddWishlist(WishlistElement wishlistElement);
+        Task<bool> DeleteWishlistElement(WishlistElement wishlistElement);
+        Task<bool> DeleteWishlist(int userId);
+        Task<int> SaveAllAsync();
     }
 
     public class WishlistRepository : IWishlistRepository
     {
-        private readonly WishlistContext _context;
+        private readonly ApiDbContext _context;
         private readonly ILogger<WishlistRepository> _logger;
 
         public WishlistRepository(
-            WishlistContext context, 
+            ApiDbContext context, 
             ILogger<WishlistRepository> logger)
         {
             _context = context;
@@ -34,19 +35,48 @@ namespace Wishlist.Api.Repositories
             return result;
         }
 
-        public void AddEntity<T>(T model) where T : notnull
+        private async Task<WishlistElement?> GetWishlistElement(WishlistElement wishlistElement)
         {
-            _context.Add(model);
+            var result = await _context.Wishlists
+                .Where(w => w.UserId == wishlistElement.UserId && w.ProductId == wishlistElement.ProductId)
+                .ToListAsync();
+
+            return result.FirstOrDefault();
         }
 
-        public void DeleteEntity<T>(T model) where T : notnull
+        private async Task<bool> IsWishlistElementExists(WishlistElement wishlistElement)
         {
-            _context.Remove(model);
+            var result = await GetWishlistElement(wishlistElement);
+            return result != null;
         }
 
-        public async Task<bool> SaveAllAsync()
+        public async Task<bool> AddWishlist(WishlistElement wishlistElement)
         {
-            return await _context.SaveChangesAsync() > 0;
+            if (await IsWishlistElementExists(wishlistElement)) return false;
+            _context.Add(wishlistElement);
+            return true;
+        }
+
+        public async Task<bool> DeleteWishlistElement(WishlistElement wishlistElement)
+        {
+            var foundElement = await GetWishlistElement(wishlistElement);
+            if(foundElement == null) return false;
+            _context.Remove(foundElement);
+            return true;
+        }
+
+        public async Task<int> SaveAllAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteWishlist(int userId)
+        {
+            var foundWishlist = await GetWishlist(userId);
+            if (foundWishlist == null) return false;
+            foreach (var foundWishlistElement in foundWishlist)
+                _context.Remove(foundWishlistElement);
+            return true;
         }
     }
 }
