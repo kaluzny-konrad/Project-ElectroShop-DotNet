@@ -2,7 +2,6 @@
 using ElectroShop.Shared.Domain;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using Wishlist.Api.Migrations;
 using Wishlist.Api.Repositories;
 using static ElectroShop.gRPC.WishlistService;
 

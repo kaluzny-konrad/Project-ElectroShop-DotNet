@@ -1,31 +1,66 @@
 ﻿using ElectroShop.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ElectroShop.Api.Controllers
+namespace ElectroShop.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ProductController : Controller
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductController : Controller
+    private readonly IProductRepository _productRepository;
+    private readonly ILogger<ProductController> _logger;
+
+    public ProductController(
+        IProductRepository productRepository, 
+        ILogger<ProductController> logger)
     {
-        private readonly IProductRepository _productRepository;
+        _productRepository = productRepository;
+        _logger = logger;
+    }
 
-        public ProductController(IProductRepository productRepository)
+    // GET: api/<controller>
+    [HttpGet]
+    public IActionResult GetProducts()
+    {
+        try
         {
-            _productRepository = productRepository;
+            var result = _productRepository.GetProducts();
+            return Ok(result);
         }
+        catch (Exception ex)
+        {
+            LogException(ex);
+            return StatusCode(500);
+        }
+    }
 
-        // GET: api/<controller>
-        [HttpGet]
-        public IActionResult GetProducts()
-        {
-            return Ok(_productRepository.GetProducts());
-        }
+    // GET api/<controller>/5
+    [HttpGet("{productId}")]
+    public IActionResult GetProduct(int productId)
+    {
+        if (productId <= 0)
+            ModelState.AddModelError("productId", 
+                "productId should be more than zero.");
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        // GET api/<controller>/5
-        [HttpGet("{productId}")]
-        public IActionResult GetProduct(int productId)
+        try
         {
-            return Ok(_productRepository.GetProduct(productId));
+            var result = _productRepository.GetProduct(productId);
+            if (result == null) return NotFound();
+
+            return Ok(result);
         }
+        catch (Exception ex)
+        {
+            LogException(ex);
+            return StatusCode(500);
+        }
+    }
+
+    private void LogException(Exception ex)
+    {
+        _logger.LogError("An error occurred while working" +
+            " on the Product Repository: {ex.Message}", 
+            ex.Message);
     }
 }

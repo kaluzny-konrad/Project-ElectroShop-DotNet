@@ -1,31 +1,66 @@
 ﻿using ElectroShop.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ElectroShop.Api.Controllers
+namespace ElectroShop.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ManufacturerController : Controller
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ManufacturerController : Controller
+    private readonly IManufacturerRepository _manufacturerRepository;
+    private readonly ILogger<ManufacturerController> _logger;
+
+    public ManufacturerController(
+        IManufacturerRepository manufacturerRepository, 
+        ILogger<ManufacturerController> logger)
     {
-        private readonly IManufacturerRepository _manufacturerRepository;
+        _manufacturerRepository = manufacturerRepository;
+        _logger = logger;
+    }
 
-        public ManufacturerController(IManufacturerRepository manufacturerRepository)
+    // GET: api/<controller>
+    [HttpGet]
+    public IActionResult GetManufacturers()
+    {
+        try
         {
-            _manufacturerRepository = manufacturerRepository;
+            var result = _manufacturerRepository.GetManufacturers();
+            return Ok(result);
         }
+        catch (Exception ex)
+        {
+            LogException(ex);
+            return StatusCode(500);
+        }
+    }
 
-        // GET: api/<controller>
-        [HttpGet]
-        public IActionResult GetManufacturers()
-        {
-            return Ok(_manufacturerRepository.GetManufacturers());
-        }
+    // GET api/<controller>/5
+    [HttpGet("{manufacturerId}")]
+    public IActionResult GetManufacturer(int manufacturerId)
+    {
+        if (manufacturerId <= 0)
+            ModelState.AddModelError(
+                "manufacturerId", "manufacturerId should be more than zero.");
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        // GET api/<controller>/5
-        [HttpGet("{manufacturerId}")]
-        public IActionResult GetManufacturer(int manufacturerId)
+        try
         {
-            return Ok(_manufacturerRepository.GetManufacturer(manufacturerId));
+            var result = _manufacturerRepository.GetManufacturer(manufacturerId);
+            if (result == null) return NotFound();
+
+            return Ok(result);
         }
+        catch (Exception ex)
+        {
+            LogException(ex);
+            return StatusCode(500);
+        }
+    }
+
+    private void LogException(Exception ex)
+    {
+        _logger.LogError("An error occurred while working" +
+            " on the Manufacturer Repository: {ex.Message}",
+            ex.Message);
     }
 }
