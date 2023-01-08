@@ -44,7 +44,7 @@ public class BasketControllerTests
         _basketServiceMock = new();
         _productServiceMock = new();
         _urlHelperMock = new();
-        _controller = new BasketController(
+        _controller = new(
             _loggerMock.Object,
             _basketServiceMock.Object,
             _productServiceMock.Object) {

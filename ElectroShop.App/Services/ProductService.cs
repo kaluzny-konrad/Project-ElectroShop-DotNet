@@ -7,7 +7,7 @@ public interface IProductService
 {
     Task<IEnumerable<Product>> GetProducts(int top);
     Task<IEnumerable<Product>> GetProducts();
-    Task<Product> GetProduct(int productId);
+    Task<Product?> GetProduct(int productId);
 }
 
 public class ProductService : IProductService
@@ -33,13 +33,14 @@ public class ProductService : IProductService
         return products;
     }
 
-    public async Task<Product> GetProduct(int productId)
+    public async Task<Product?> GetProduct(int productId)
     {
+        if (productId == 0) return null;
+
         var product = await JsonSerializer.DeserializeAsync<Product>(
             await _httpClient.GetStreamAsync($"api/product/{productId}"),
             new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
         );
-        if (product == null) return new Product();
 
         return product;
     }

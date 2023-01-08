@@ -34,6 +34,8 @@ public class BasketController : Controller
             basketItems.Select(async basketItem =>
                 {
                     var product = await _productService.GetProduct(basketItem.ProductId);
+                    if (product == null) return new ProductInBasketData();
+
                     var productImagePath = Url.Content($"~/images/product/{product.ProductId}-thumb.webp");
                     var productPageUrl = $"/product/details/{product.ProductId}";
 
@@ -49,7 +51,10 @@ public class BasketController : Controller
                         BasketItemId = basketItem.BasketItemId,
                     };
                     return expandedBasketItem;
-                }).Select(r => r.Result).ToList();
+                }).Select(r => r.Result).Where(p => p.ProductId != 0).ToList();
+
+        if (expandedBasketItems.IsNullOrEmpty())
+            return View("Empty");
 
         var model = new BasketViewModel() { BasketItems = expandedBasketItems };
         return View("Index", model);

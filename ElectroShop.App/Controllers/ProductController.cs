@@ -30,7 +30,7 @@ public class ProductController : Controller
             Product = product,
         };
 
-        return View(model);
+        return View("Details", model);
     }
 
     private async Task<BaseProductData> GetBaseProductData(int productId)

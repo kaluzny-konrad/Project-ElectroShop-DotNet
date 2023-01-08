@@ -1,7 +1,6 @@
-﻿using ElectroShop.Shared.Domain;
+﻿using ElectroShop.App.Helpers;
+using ElectroShop.Shared.Domain;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.Text.Json;
 
 namespace ElectroShop.App.Services;
 
@@ -16,20 +15,32 @@ public interface IBasketService
 public class BasketService : IBasketService
 {
     private readonly ILogger<BasketService> _logger;
-    private readonly HttpClient _httpClient;
+    private readonly IJsonSerializeHelper _jsonHelper;
+    private readonly IHttpClientHelper _httpClient;
 
-    public BasketService(ILogger<BasketService> logger, HttpClient httpClient)
+    public BasketService(
+        ILogger<BasketService> logger, 
+        HttpClient httpClient,
+        IJsonSerializeHelper jsonHelper,
+        IHttpClientHelper? httpClientHelper = null
+    )
     {
         _logger = logger;
-        _httpClient = httpClient;
+        if(httpClientHelper == null)
+            _httpClient = new HttpClientHelper(httpClient);
+        else
+            _httpClient = httpClientHelper;
+        _jsonHelper = jsonHelper;
     }
 
     public async Task<List<BasketItem>> GetBasketItems(int userId)
     {
-        var basketItems = await JsonSerializer.DeserializeAsync<List<BasketItem>>(
-            await _httpClient.GetStreamAsync($"api/basketItems/{userId}"),
-            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
-        );
+        if (userId == 0) return new List<BasketItem>();
+
+        var requestUri = $"api/basketItems/{userId}";
+        var stream = await _httpClient.GetStreamAsync(requestUri);
+        var basketItems = await _jsonHelper
+            .GetDeserializedContentAsync<List<BasketItem>>(stream);
 
         if (basketItems == null || basketItems.IsNullOrEmpty())
         {
@@ -42,20 +53,19 @@ public class BasketService : IBasketService
 
     public async Task<BasketItem?> CreateBasketItem(BasketItem basketItem)
     {
-        var basketItemJson = new StringContent(
-            JsonSerializer.Serialize(basketItem), 
-            Encoding.UTF8, "application/json");
+        if (basketItem == null || basketItem.ProductId == 0) return null;
 
-        var response = await _httpClient.PostAsync("api/basketitems", 
-            basketItemJson);
+        var basketItemJson = _jsonHelper.GetSerializedContent(basketItem);
+
+        var requestUri = "api/basketitems";
+        var response = await _httpClient.PostAsync(requestUri, basketItemJson);
 
         if (response.IsSuccessStatusCode)
         {
-            var createdBasketItem = await JsonSerializer
-                .DeserializeAsync<BasketItem?>
-                (await response.Content.ReadAsStreamAsync());
-            if (createdBasketItem != null) 
-                return createdBasketItem;
+            var stream = await response.Content.ReadAsStreamAsync();
+            var createdBasketItem = await _jsonHelper
+                .GetDeserializedContentAsync<BasketItem>(stream);
+            return createdBasketItem;
         }
 
         return null;
@@ -63,19 +73,18 @@ public class BasketService : IBasketService
 
     public async Task<BasketItem?> UpdateBasketItem(BasketItem basketItem)
     {
-        var basketItemJson = new StringContent(
-            JsonSerializer.Serialize(basketItem),
-            Encoding.UTF8, "application/json");
+        if (basketItem == null || basketItem.ProductId == 0) return null;
 
-        var response = await _httpClient
-            .PutAsync($"api/basketitems/{basketItem.BasketItemId}", 
-            basketItemJson);
+        var basketItemJson = _jsonHelper.GetSerializedContent(basketItem);
+
+        var requestUri = $"api/basketitems/{basketItem.BasketItemId}";
+        var response = await _httpClient.PutAsync(requestUri, basketItemJson);
 
         if (response.IsSuccessStatusCode)
         {
-            var updatedBasketItem = await JsonSerializer
-                .DeserializeAsync<BasketItem?>
-                (await response.Content.ReadAsStreamAsync());
+            var stream = await response.Content.ReadAsStreamAsync();
+            var updatedBasketItem = await _jsonHelper
+                .GetDeserializedContentAsync<BasketItem>(stream);
             if (updatedBasketItem != null)
                 return updatedBasketItem;
         }
@@ -85,13 +94,16 @@ public class BasketService : IBasketService
 
     public async Task<bool> DeleteBasketItem(int basketItemId)
     {
-        var response = await _httpClient.DeleteAsync($"api/basketitems/{basketItemId}");
+        if (basketItemId == 0) return false;
+
+        var requestUri = $"api/basketitems/{basketItemId}";
+        var response = await _httpClient.DeleteAsync(requestUri);
 
         if (response.IsSuccessStatusCode)
         {
-            var deletedBasketItem = await JsonSerializer
-                .DeserializeAsync<BasketItem>
-                (await response.Content.ReadAsStreamAsync());
+            var stream = await response.Content.ReadAsStreamAsync();
+            var deletedBasketItem = await _jsonHelper
+                .GetDeserializedContentAsync<BasketItem>(stream);
             if (deletedBasketItem != null)
                 return true;
         }

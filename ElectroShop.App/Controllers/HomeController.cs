@@ -24,19 +24,18 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var products = await GetProductsBaseData();
+        var products = await GetProductsBaseData(3);
 
         var model = new HomeViewModel
         {
             Products = products,
         };
 
-        return View(model);
+        return View("Index", model);
     }
 
-    private async Task<List<BaseProductData>> GetProductsBaseData()
+    private async Task<List<BaseProductData>> GetProductsBaseData(int top)
     {
-        var top = 3;
         var products = await _productService.GetProducts(top);
 
         var categoryDataProducts = new List<BaseProductData>();
@@ -63,7 +62,7 @@ public class HomeController : Controller
 
     public IActionResult Privacy()
     {
-        return View();
+        return View("Privacy");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
