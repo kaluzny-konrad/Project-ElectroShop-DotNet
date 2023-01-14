@@ -68,6 +68,34 @@ public class BasketServiceTests
         Assert.That(result, Is.EqualTo(_correctBasketItems));
     }
 
+    [Test]
+    public async Task GetBasketItems_EmptyBasketItems_Returns_EmptyListAndError()
+    {
+        // Arrange
+        var userId = 1;
+        MockUserEmptyBasketData(userId);
+
+        // Act
+        var result = await _basketService.GetBasketItems(userId);
+
+        // Assert
+        Assert.That(result, Is.EqualTo(new List<BasketItem>()));
+    }
+
+    [Test]
+    public async Task GetBasketItems_NullBasketItems_Returns_EmptyListAndError()
+    {
+        // Arrange
+        var userId = 1;
+        MockUserNullBasketData(userId);
+
+        // Act
+        var result = await _basketService.GetBasketItems(userId);
+
+        // Assert
+        Assert.That(result, Is.EqualTo(new List<BasketItem>()));
+    }
+
     private void MockUserCorrectBasketData(int userId)
     {
         var requestUri = $"api/basketItems/{userId}";
@@ -80,5 +108,33 @@ public class BasketServiceTests
         _jsonHelperMock
             .Setup(r => r.GetDeserializedContentAsync<List<BasketItem>>(streamMock))
             .ReturnsAsync(_correctBasketItems);
+    }
+
+    private void MockUserEmptyBasketData(int userId)
+    {
+        var requestUri = $"api/basketItems/{userId}";
+
+        var streamMock = new MemoryStream();
+        _httpClientMock
+            .Setup(h => h.GetStreamAsync(requestUri))
+            .ReturnsAsync(streamMock);
+
+        _jsonHelperMock
+            .Setup(r => r.GetDeserializedContentAsync<List<BasketItem>>(streamMock))
+            .ReturnsAsync(new List<BasketItem>());
+    }
+
+    private void MockUserNullBasketData(int userId)
+    {
+        var requestUri = $"api/basketItems/{userId}";
+
+        var streamMock = new MemoryStream();
+        _httpClientMock
+            .Setup(h => h.GetStreamAsync(requestUri))
+            .ReturnsAsync(streamMock);
+
+        _jsonHelperMock
+            .Setup(r => r.GetDeserializedContentAsync<List<BasketItem>>(streamMock))
+            .ReturnsAsync(value: null);
     }
 }
