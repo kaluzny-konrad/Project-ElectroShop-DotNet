@@ -1,56 +1,53 @@
 ﻿using ElectroShop.App.Business;
 using ElectroShop.App.Models;
 using ElectroShop.App.Services;
-using ElectroShop.Shared.Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace ElectroShop.App.Controllers
+namespace ElectroShop.App.Controllers;
+
+public class ProductController : Controller
 {
-    public class ProductController : Controller
+    private readonly ILogger<ProductController> _logger;
+
+    private readonly IProductService _productService;
+
+    public ProductController
+    (
+        ILogger<ProductController> logger, 
+        IProductService productService
+    )
     {
-        private readonly ILogger<ProductController> _logger;
+        _logger = logger;
+        _productService = productService;
+    }
 
-        private readonly IProductService _productService;
+    public async Task<IActionResult> Details(int id)
+    {
+        var product = await GetBaseProductData(id);
 
-        public ProductController
-        (
-            ILogger<ProductController> logger, 
-            IProductService productService
-        )
+        var model = new ProductViewModel
         {
-            _logger = logger;
-            _productService = productService;
-        }
+            Product = product,
+        };
 
-        public async Task<IActionResult> Details(int id)
+        return View("Details", model);
+    }
+
+    private async Task<BaseProductData> GetBaseProductData(int productId)
+    {
+        var product = await _productService.GetProduct(productId);
+        var productImagePath = Url.Content($"~/images/product/{product.ProductId}-thumb.webp");
+        var productPageUrl = $"/product/details/{product.ProductId}";
+
+        var productPageData = new BaseProductData
         {
-            var product = await GetBaseProductData(id);
+            ProductId = product.ProductId,
+            ProductName = product.ProductName,
+            Price = product.Price,
+            ProductImagePath = productImagePath,
+            ProductPageUrl = productPageUrl,
+        };
 
-            var model = new ProductViewModel
-            {
-                Product = product,
-            };
-
-            return View(model);
-        }
-
-        private async Task<BaseProductData> GetBaseProductData(int productId)
-        {
-            var product = await _productService.GetProduct(productId);
-            var productImagePath = Url.Content($"~/images/product/{product.ProductId}-thumb.webp");
-            var productPageUrl = $"/product/details/{product.ProductId}";
-
-            var productPageData = new BaseProductData
-            {
-                ProductId = product.ProductId,
-                ProductName = product.ProductName,
-                Price = product.Price,
-                ProductImagePath = productImagePath,
-                ProductPageUrl = productPageUrl,
-            };
-
-            return productPageData;
-        }
+        return productPageData;
     }
 }

@@ -1,3 +1,4 @@
+using ElectroShop.App.Helpers;
 using ElectroShop.App.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,8 @@ builder.Services.AddHttpClient<IBasketService, BasketService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7294/");
 });
+
+builder.Services.AddSingleton<IJsonSerializeHelper, JsonSerializeHelper>();
 
 builder.Services.AddControllersWithViews();
 

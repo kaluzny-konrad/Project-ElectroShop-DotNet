@@ -1,66 +1,70 @@
 ﻿using Basket.Api.Context;
 using ElectroShop.Shared.Domain;
 
-namespace Basket.Api.Repositories
+namespace Basket.Api.Repositories;
+
+public interface IBasketItemsRepository
 {
-    public interface IBasketItemsRepository
+    IEnumerable<BasketItem> GetBasketItems(int userId);
+    BasketItem? GetBasketItem(int basketItemId);
+    bool IsBasketItemExists(BasketItem basketItem);
+    BasketItem? AddBasketItem(BasketItem basketItem);
+    BasketItem? UpdateBasketItem(BasketItem basketItem);
+    bool DeleteBasketItem(int basketItemId);
+}
+
+public class BasketItemsRepository : IBasketItemsRepository
+{
+    private readonly ApiDbContext _dbContext;
+
+    public BasketItemsRepository(ApiDbContext dbContext)
     {
-        IEnumerable<BasketItem> GetBasketItems(int userId);
-        BasketItem? GetBasketItem(int basketItemId);
-        bool IsBasketItemExists(BasketItem basketItem);
-        BasketItem AddBasketItem(BasketItem basketItem);
-        BasketItem? UpdateBasketItem(BasketItem basketItem);
-        void DeleteBasketItem(int basketItemId);
+        _dbContext = dbContext;
     }
 
-    public class BasketItemsRepository : IBasketItemsRepository
+    public IEnumerable<BasketItem> GetBasketItems(int userId) 
+        => _dbContext.BasketItems
+            .Where(i => i.UserId == userId);
+
+    public BasketItem? GetBasketItem(int basketItemId) 
+        => _dbContext.BasketItems
+            .FirstOrDefault(i => i.BasketItemId == basketItemId);
+
+    public bool IsBasketItemExists(BasketItem basketItem)
+        => _dbContext.BasketItems
+            .Where(i => i.UserId == basketItem.UserId 
+                && i.ProductId == basketItem.ProductId)
+            .Any();
+
+    public BasketItem? AddBasketItem(BasketItem basketItem)
     {
-        private readonly ApiDbContext _dbContext;
+        var foundBasketItem = GetBasketItem(basketItem.BasketItemId);
+        if (foundBasketItem != null) return null;
 
-        public BasketItemsRepository(ApiDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
-        public IEnumerable<BasketItem> GetBasketItems(int userId) 
-            => _dbContext.BasketItems
-                .Where(i => i.UserId == userId);
-
-        public BasketItem? GetBasketItem(int basketItemId) 
-            => _dbContext.BasketItems
-                .FirstOrDefault(i => i.BasketItemId == basketItemId);
-
-        public bool IsBasketItemExists(BasketItem basketItem)
-            => _dbContext.BasketItems
-                .Where(i => i.UserId == basketItem.UserId 
-                    && i.ProductId == basketItem.ProductId)
-                .Any();
-
-        public BasketItem AddBasketItem(BasketItem basketItem)
-        {
-            var addedEntity = _dbContext.BasketItems.Add(basketItem);
-            _dbContext.SaveChanges();
+        var addedEntity = _dbContext.BasketItems.Add(basketItem);
+        if (_dbContext.SaveChanges() > 0)
             return addedEntity.Entity;
-        }
+        else return null;
+    }
 
-        public BasketItem? UpdateBasketItem(BasketItem basketItem)
-        {
-            var foundBasketItem = GetBasketItem(basketItem.BasketItemId);
-            if (foundBasketItem == null) return null;
+    public BasketItem? UpdateBasketItem(BasketItem basketItem)
+    {
+        var foundBasketItem = GetBasketItem(basketItem.BasketItemId);
+        if (foundBasketItem == null) return null;
 
-            foundBasketItem.Amount = basketItem.Amount;
+        foundBasketItem.Amount = basketItem.Amount;
 
-            _dbContext.SaveChanges();
+        if (_dbContext.SaveChanges() > 0)
             return foundBasketItem;
-        }
+        else return null;
+    }
 
-        public void DeleteBasketItem(int basketItemId)
-        {
-            var foundBasketItem = GetBasketItem(basketItemId);
-            if (foundBasketItem == null) return;
+    public bool DeleteBasketItem(int basketItemId)
+    {
+        var foundBasketItem = GetBasketItem(basketItemId);
+        if (foundBasketItem == null) return false;
 
-            _dbContext.BasketItems.Remove(foundBasketItem);
-            _dbContext.SaveChanges();
-        }
+        _dbContext.BasketItems.Remove(foundBasketItem);
+        return _dbContext.SaveChanges() > 0;
     }
 }

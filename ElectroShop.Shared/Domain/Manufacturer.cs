@@ -1,8 +1,7 @@
-﻿namespace ElectroShop.Shared.Domain
+﻿namespace ElectroShop.Shared.Domain;
+
+public class Manufacturer
 {
-    public class Manufacturer
-    {
-        public int ManufacturerId { get; set; }
-        public string ManufacturerName { get; set; } = string.Empty;
-    }
+    public int ManufacturerId { get; set; }
+    public string ManufacturerName { get; set; } = string.Empty;
 }

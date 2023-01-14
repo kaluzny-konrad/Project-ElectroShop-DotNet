@@ -1,31 +1,30 @@
 ﻿using ElectroShop.Api.Context;
 using ElectroShop.Shared.Domain;
 
-namespace ElectroShop.Api.Repositories
+namespace ElectroShop.Api.Repositories;
+
+public interface IProductRepository
 {
-    public interface IProductRepository
+    IEnumerable<Product> GetProducts();
+    Product? GetProduct(int productId);
+}
+
+public class ProductRepository : IProductRepository
+{
+    private readonly ApiDbContext _dbContext;
+
+    public ProductRepository(ApiDbContext dbContext)
     {
-        IEnumerable<Product> GetProducts();
-        Product? GetProduct(int productId);
+        _dbContext = dbContext;
     }
 
-    public class ProductRepository : IProductRepository
+    public Product? GetProduct(int productId)
     {
-        private readonly ApiDbContext _dbContext;
+        return _dbContext.Products.FirstOrDefault(p => p.ProductId == productId);
+    }
 
-        public ProductRepository(ApiDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
-        public Product? GetProduct(int productId)
-        {
-            return _dbContext.Products.FirstOrDefault(p => p.ProductId == productId);
-        }
-
-        public IEnumerable<Product> GetProducts()
-        {
-            return _dbContext.Products;
-        }
+    public IEnumerable<Product> GetProducts()
+    {
+        return _dbContext.Products;
     }
 }
