@@ -94,7 +94,7 @@ public class BasketService : IBasketService
 
     public async Task<bool> DeleteBasketItem(int basketItemId)
     {
-        if (basketItemId == 0) return false;
+        if (basketItemId <= 0) return false;
 
         var requestUri = $"api/basketitems/{basketItemId}";
         var response = await _httpClient.DeleteAsync(requestUri);
