@@ -10,6 +10,7 @@ service WishlistService {
 	rpc GetWishlistByUserId (UserInfo) returns (UserWishlist);
 	rpc DeleteWishlistElements (WishlistElementsToDelete) returns (StatusMessage);
 	rpc DeleteWishlist (WishlistsToDelete) returns (StatusMessage);
+	rpc DeteleWishlistElementById (WishlistElementToDeleteById) returns (StatusMessage);
 }
 
 message WishlistsToDelete {
@@ -23,6 +24,11 @@ message WishlistElementsToDelete {
 message WishlistElementToDelete {
 	int32 UserId = 1;
 	int32 ProductId = 2;
+}
+
+message WishlistElementToDeleteById {
+	int32 WishlistElementId = 1;
+	int32 UserId = 2;
 }
 
 message ErrorMessage {
@@ -42,6 +48,7 @@ message WishlistElementGrpc {
 	int32 ProductId = 2;
 	google.protobuf.Timestamp AddedDate = 4;
 	reserved 3;
+	int32 WishlistElementId = 5;
 }
 
 message WishlistPacket {

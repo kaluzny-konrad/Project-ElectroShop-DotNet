@@ -34,7 +34,8 @@ public class WishlistService : WishlistServiceBase
             {
                 UserId = wishlistElement.UserId,
                 ProductId = wishlistElement.ProductId,
-                AddedDate = addedDate.ToTimestamp()
+                AddedDate = addedDate.ToTimestamp(),
+                WishlistElementId = wishlistElement.Id
             };
             userWishlist.WishlistElements.Add(wishlistMessage);
         }
@@ -199,6 +200,30 @@ public class WishlistService : WishlistServiceBase
                 return HandleSaveSuccess(savedChanges);
         }
         else return HandleNoChanges();
+
+        return HandleSaveFailure();
+    }
+
+    public override async Task<StatusMessage> DeteleWishlistElementById(
+        WishlistElementToDeleteById request, ServerCallContext context)
+    {
+        var wishlistElementId = request.WishlistElementId;
+        if (wishlistElementId <= 0) return HandleNoChanges();
+
+        var wishlistElement = await _repository.GetWishlistElement(wishlistElementId);
+        if (wishlistElement == null) return HandleNoChanges();
+        if (wishlistElement.UserId != request.UserId) return HandleNoChanges();
+
+        int changesToSave = 0;
+        if (await _repository.DeleteWishlistElement(wishlistElementId))
+            changesToSave++;
+
+        if (changesToSave > 0)
+        {
+            var savedChanges = await _repository.SaveAllAsync();
+            if (savedChanges > 0)
+                return HandleSaveSuccess(savedChanges);
+        }
 
         return HandleSaveFailure();
     }

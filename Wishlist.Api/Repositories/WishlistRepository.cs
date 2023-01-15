@@ -6,9 +6,11 @@ namespace Wishlist.Api.Repositories;
 public interface IWishlistRepository
 {
     Task<IEnumerable<WishlistElement>> GetWishlist(int userId);
+    Task<WishlistElement?> GetWishlistElement(int wishlistElementId);
 
     Task<bool> AddWishlist(WishlistElement wishlistElement);
     Task<bool> DeleteWishlistElement(WishlistElement wishlistElement);
+    Task<bool> DeleteWishlistElement(int wishlistElementId);
     Task<bool> DeleteWishlist(int userId);
     Task<int> SaveAllAsync();
 }
@@ -44,6 +46,15 @@ public class WishlistRepository : IWishlistRepository
         return result.FirstOrDefault();
     }
 
+    public async Task<WishlistElement?> GetWishlistElement(int wishlistElementId)
+    {
+        var result = await _context.Wishlists
+            .Where(w => w.Id == wishlistElementId)
+            .ToListAsync();
+
+        return result.FirstOrDefault();
+    }
+
     private async Task<bool> IsWishlistElementExists(WishlistElement wishlistElement)
     {
         var result = await GetWishlistElement(wishlistElement);
@@ -61,6 +72,14 @@ public class WishlistRepository : IWishlistRepository
     {
         var foundElement = await GetWishlistElement(wishlistElement);
         if(foundElement == null) return false;
+        _context.Remove(foundElement);
+        return true;
+    }
+
+    public async Task<bool> DeleteWishlistElement(int wishlistElementId)
+    {
+        var foundElement = await GetWishlistElement(wishlistElementId);
+        if (foundElement == null) return false;
         _context.Remove(foundElement);
         return true;
     }
