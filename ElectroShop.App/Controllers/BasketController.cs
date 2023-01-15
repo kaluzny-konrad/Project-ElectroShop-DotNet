@@ -25,7 +25,8 @@ public class BasketController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var basketItems = await _basketService.GetBasketItems(1);
+        var userId = 1;
+        var basketItems = await _basketService.GetBasketItems(userId);
 
         if (basketItems.IsNullOrEmpty())
             return View("Empty");
@@ -56,7 +57,11 @@ public class BasketController : Controller
         if (expandedBasketItems.IsNullOrEmpty())
             return View("Empty");
 
-        var model = new BasketViewModel() { BasketItems = expandedBasketItems };
+        var model = new BasketViewModel() 
+        { 
+            BasketItems = expandedBasketItems 
+        };
+
         return View("Index", model);
     }
 

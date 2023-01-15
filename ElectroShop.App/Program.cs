@@ -1,5 +1,6 @@
 using ElectroShop.App.Helpers;
 using ElectroShop.App.Services;
+using static ElectroShop.gRPC.WishlistService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,13 @@ builder.Services.AddHttpClient<IProductDescriptionService, ProductDescriptionSer
 builder.Services.AddHttpClient<IBasketService, BasketService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7294/");
+});
+
+builder.Services.AddTransient<IWishlistService, WishlistService>();
+
+builder.Services.AddGrpcClient<WishlistServiceClient>(client =>
+{
+    client.Address = new Uri("https://localhost:7036");
 });
 
 builder.Services.AddSingleton<IJsonSerializeHelper, JsonSerializeHelper>();
